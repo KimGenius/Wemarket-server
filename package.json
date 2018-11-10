@@ -18,6 +18,9 @@
   },
   "homepage": "https://github.com/KimGenius/Wemarket-server#readme",
   "dependencies": {
+    "async-mysql": "^1.0.1",
+    "body-parser": "^1.18.3",
+    "crypto": "^1.0.1",
     "express": "^4.16.4"
   },
   "devDependencies": {
