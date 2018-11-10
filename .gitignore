@@ -136,3 +136,4 @@ typings/
 # Serverless directories
 .serverless
 
+.idea/inspectionProfiles/
