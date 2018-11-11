@@ -107,7 +107,7 @@ app.get('/menu/:sdx', async (req, res) => {
     if (!result[0]) {
       return res.status(404).send()
     }
-    return res.json(result[0])
+    return res.json(result)
   } catch (e) {
     console.log(e)
     res.status(500).json(e)
