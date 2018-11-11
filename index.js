@@ -2,7 +2,7 @@
 const express = require('express')
 const app = express()
 const port = 3000
-const mysql = require('async-mysql')
+const mysql = require('mysql')
 const config = require('./config')
 const bodyParser = require('body-parser')
 const crypto = require('crypto')
@@ -98,12 +98,11 @@ app.post('/menu/:sdx', async (req, res) => {
 })
 // 메뉴 리스트
 app.get('/menu/:sdx', async (req, res) => {
-  const connection = await mysql.connect(config)
   const {
     sdx
   } = req.params
   try {
-    const result = await connection.query(`SELECT * FROM menu WHERE sdx = ${sdx}`)
+    const result = await query(`SELECT * FROM menu WHERE sdx = ${sdx}`)
     if (!result[0]) {
       return res.status(404).send()
     }
@@ -113,5 +112,18 @@ app.get('/menu/:sdx', async (req, res) => {
     res.status(500).json(e)
   }
 })
+
+async function query(sql) {
+  const pool = await mysql.createPool(config)
+    return new Promise(function (resolve, reject) {
+      pool.query(sql, function (err, rows) {
+        if (err) {
+          reject(new Error(err));
+        } else {
+          resolve(rows);
+        }
+      });
+    });
+}
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
