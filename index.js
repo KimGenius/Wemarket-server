@@ -61,5 +61,22 @@ app.post('/join', async (req, res) => {
     }
   }
 })
+app.post('/login', async (req, res) => {
+  const connection = await mysql.connect(config)
+  const {
+    id,
+    pw
+  } = req.body
+  const hexPw = crypto.createHash('sha512').update(pw).digest('hex')
+  try {
+    const result = await connection.query(`SELECT t.* FROM wemarket.seller t WHERE t.id = '${id}' and t.pw = '${hexPw}';`)
+    if (!result[0]) {
+      return res.status(404).send()
+    }
+    return res.json(result[0])
+  } catch (e) {
+    res.status(500).json(e)
+  }
+})
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
