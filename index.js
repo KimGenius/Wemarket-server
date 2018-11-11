@@ -7,6 +7,7 @@ const config = require('./config')
 const bodyParser = require('body-parser')
 const crypto = require('crypto')
 // parse application/x-www-form-urlencoded
+app.use('/uploads', express.static('uploads'))
 app.use(bodyParser.urlencoded({limit: '100mb', extended: true}))
 
 // parse application/json
@@ -89,11 +90,11 @@ var storage = multer.diskStorage(
     }
   }
 );
-var upload = multer( { storage: storage } );
+var upload = multer( { storage: storage } )
 // 메뉴 생성
 app.post('/menu/:sdx/image/:idx', upload.single('image'), async (req, res) => {
-  const {sdx, idx} = req.params
-  const {affectedRows} = await query(`UPDATE menu SET image = '${sdx}:${idx}' WHERE idx = ${sdx}`)
+  const {idx} = req.params
+  await query(`UPDATE menu SET image = '${req.file.filename}' WHERE idx = ${idx}`)
   res.status(200).json(req.file)
 })
 app.post('/menu/:sdx', async (req, res) => {
