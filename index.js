@@ -112,6 +112,19 @@ app.get('/menu/:sdx', async (req, res) => {
     res.status(500).json(e)
   }
 })
+// 메뉴 삭제
+app.delete('/menu/:idx', async (req, res) => {
+  const {
+    idx
+  } = req.params
+  try {
+    const {affectedRows} = await query(`DELETE FROM menu WHERE idx = ${idx}`)
+    if (affectedRows === 1) return res.status(200).send()
+    else if(affectedRows === 0) return res.status(404).send()
+  } catch (e) {
+    res.status(500).json(e)
+  }
+})
 
 async function query(sql) {
   const pool = await mysql.createPool(config)
