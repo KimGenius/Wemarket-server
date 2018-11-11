@@ -139,3 +139,4 @@ typings/
 .idea/inspectionProfiles/
 config.js
 uploads
+.DS_Store
