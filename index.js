@@ -78,5 +78,40 @@ app.post('/login', async (req, res) => {
     res.status(500).json(e)
   }
 })
+// 메뉴 생성
+app.post('/menu/:sdx', async (req, res) => {
+  const connection = await mysql.connect(config)
+  const {
+    name,
+    image,
+    price
+  } = req.body
+  const {
+    sdx
+  } = req.param
+  try {
+    const {affectedRows} = await connection.query(`INSERT INTO menu (sdx, image, name, price) VALUES (${sdx}, '${name}', '${image}', ${price})`)
+    if (affectedRows === 1) return res.status(200).send()
+  } catch (e) {
+    res.status(500).json(e)
+  }
+})
+// 메뉴 리스트
+app.get('/menu/:sdx', async (req, res) => {
+  const connection = await mysql.connect(config)
+  const {
+    sdx
+  } = req.params
+  try {
+    const result = await connection.query(`SELECT * FROM menu WHERE sdx = ${sdx}`)
+    if (!result[0]) {
+      return res.status(404).send()
+    }
+    return res.json(result[0])
+  } catch (e) {
+    console.log(e)
+    res.status(500).json(e)
+  }
+})
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
