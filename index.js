@@ -48,7 +48,7 @@ app.post('/join', async (req, res) => {
     bank,
     accountNumber
   } = req.body
-  const hexPw = crypto.createHash('sha512').update(pw).digest('hex');
+  const hexPw = crypto.createHash('sha512').update(pw).digest('hex')
   try {
     const {affectedRows} = await connection.query('INSERT INTO `wemarket`.`seller` (`id`, `pw`, `storeName`, `storeDesc`, `storeType`, `sellerName`, `sellerCode`, `phone`, `bank`, `accountNumber`) VALUES ' +
       '("' + id + '", "' + hexPw + '", "' + storeName + '", "' + storeDesc + '", "' + storeType + '", "' + sellerName + '", "' + sellerCode + '", "' + phone + '", "' + bank + '", "' + accountNumber + '")')
