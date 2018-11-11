@@ -80,7 +80,6 @@ app.post('/login', async (req, res) => {
 })
 // 메뉴 생성
 app.post('/menu/:sdx', async (req, res) => {
-  const connection = await mysql.connect(config)
   const {
     name,
     image,
@@ -88,11 +87,12 @@ app.post('/menu/:sdx', async (req, res) => {
   } = req.body
   const {
     sdx
-  } = req.param
+  } = req.params
   try {
-    const {affectedRows} = await connection.query(`INSERT INTO menu (sdx, image, name, price) VALUES (${sdx}, '${name}', '${image}', ${price})`)
+    const {affectedRows} = await query(`INSERT INTO menu (sdx, image, name, price) VALUES (${sdx}, '${image}', '${name}', ${price})`)
     if (affectedRows === 1) return res.status(200).send()
   } catch (e) {
+    console.log(e)
     res.status(500).json(e)
   }
 })
@@ -115,15 +115,15 @@ app.get('/menu/:sdx', async (req, res) => {
 
 async function query(sql) {
   const pool = await mysql.createPool(config)
-    return new Promise(function (resolve, reject) {
-      pool.query(sql, function (err, rows) {
-        if (err) {
-          reject(new Error(err));
-        } else {
-          resolve(rows);
-        }
-      });
+  return new Promise(function (resolve, reject) {
+    pool.query(sql, function (err, rows) {
+      if (err) {
+        reject(new Error(err));
+      } else {
+        resolve(rows);
+      }
     });
+  });
 }
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
