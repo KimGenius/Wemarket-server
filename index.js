@@ -7,10 +7,10 @@ const config = require('./config')
 const bodyParser = require('body-parser')
 const crypto = require('crypto')
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.urlencoded({limit: '100mb', extended: true}))
 
 // parse application/json
-app.use(bodyParser.json())
+app.use(bodyParser.json({limit: '100mb'}))
 app.use(function (req, res, next) {
   var oneof = false
   if (req.headers.origin) {
@@ -78,19 +78,38 @@ app.post('/login', async (req, res) => {
     res.status(500).json(e)
   }
 })
+const multer = require('multer')
+var storage = multer.diskStorage(
+  {
+    destination: './uploads/',
+    filename: function ( req, file, cb ) {
+      const fileName = file.originalname.split('.')
+      const fileExt = fileName[fileName.length - 1]
+      cb( null, req.params.sdx + ':' + req.params.idx + '.' + fileExt);
+    }
+  }
+);
+var upload = multer( { storage: storage } );
 // 메뉴 생성
+app.post('/menu/:sdx/image/:idx', upload.single('image'), async (req, res) => {
+  const {sdx, idx} = req.params
+  const {affectedRows} = await query(`UPDATE menu SET image = '${sdx}:${idx}' WHERE idx = ${sdx}`)
+  res.status(200).json(req.file)
+})
 app.post('/menu/:sdx', async (req, res) => {
   const {
     name,
-    image,
     price
   } = req.body
   const {
     sdx
   } = req.params
   try {
-    const {affectedRows} = await query(`INSERT INTO menu (sdx, image, name, price) VALUES (${sdx}, '${image}', '${name}', ${price})`)
-    if (affectedRows === 1) return res.status(200).send()
+    const {affectedRows} = await query(`INSERT INTO menu (sdx, image, name, price) VALUES (${sdx}, '', '${name}', ${price})`)
+    if (affectedRows === 1) {
+      const result = await query(`SELECT idx FROM menu WHERE sdx=${sdx} ORDER BY idx DESC limit 1`)
+      return res.status(200).json({idx: result[0].idx})
+    }
   } catch (e) {
     console.log(e)
     res.status(500).json(e)
@@ -120,7 +139,7 @@ app.delete('/menu/:idx', async (req, res) => {
   try {
     const {affectedRows} = await query(`DELETE FROM menu WHERE idx = ${idx}`)
     if (affectedRows === 1) return res.status(200).send()
-    else if(affectedRows === 0) return res.status(404).send()
+    else if (affectedRows === 0) return res.status(404).send()
   } catch (e) {
     res.status(500).json(e)
   }

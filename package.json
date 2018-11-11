@@ -21,7 +21,8 @@
     "async-mysql": "^1.0.1",
     "body-parser": "^1.18.3",
     "crypto": "^1.0.1",
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "multer": "^1.4.1"
   },
   "devDependencies": {
     "nodemon": "^1.18.6"
