@@ -36,7 +36,6 @@ app.use(function (req, res, next) {
   }
 })
 app.post('/join', async (req, res) => {
-  const connection = await mysql.connect(config)
   const {
     id,
     pw,
@@ -51,7 +50,7 @@ app.post('/join', async (req, res) => {
   } = req.body
   const hexPw = crypto.createHash('sha512').update(pw).digest('hex')
   try {
-    const {affectedRows} = await connection.query('INSERT INTO `wemarket`.`seller` (`id`, `pw`, `storeName`, `storeDesc`, `storeType`, `sellerName`, `sellerCode`, `phone`, `bank`, `accountNumber`) VALUES ' +
+    const {affectedRows} = query('INSERT INTO `wemarket`.`seller` (`id`, `pw`, `storeName`, `storeDesc`, `storeType`, `sellerName`, `sellerCode`, `phone`, `bank`, `accountNumber`) VALUES ' +
       '("' + id + '", "' + hexPw + '", "' + storeName + '", "' + storeDesc + '", "' + storeType + '", "' + sellerName + '", "' + sellerCode + '", "' + phone + '", "' + bank + '", "' + accountNumber + '")')
     res.json({affectedRows})
   } catch (e) {
@@ -63,14 +62,13 @@ app.post('/join', async (req, res) => {
   }
 })
 app.post('/login', async (req, res) => {
-  const connection = await mysql.connect(config)
   const {
     id,
     pw
   } = req.body
   const hexPw = crypto.createHash('sha512').update(pw).digest('hex')
   try {
-    const result = await connection.query(`SELECT t.* FROM wemarket.seller t WHERE t.id = '${id}' and t.pw = '${hexPw}';`)
+    const result = await query(`SELECT t.* FROM wemarket.seller t WHERE t.id = '${id}' and t.pw = '${hexPw}';`)
     if (!result[0]) {
       return res.status(404).send()
     }
