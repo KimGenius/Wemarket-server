@@ -167,4 +167,16 @@ app.put('/user/:idx', async (req, res) => {
   }
   else if (affectedRows === 0) return res.status(404).send()
 })
+
+// 파트너스(level) 상태 변경
+app.put('/user/:idx/level', async (req, res) => {
+  const {idx} = req.params
+  const {level} = req.body // PENDING, PARTNERS 두개 값만
+  const {affectedRows} = await query(`UPDATE seller SET level = '${level}' WHERE idx = ${idx}`)
+  if (affectedRows === 1) {
+    const result = await query(`SELECT * FROM seller WHERE idx = ${idx}`)
+    return res.status(200).send(result[0])
+  }
+  else if (affectedRows === 0) return res.status(404).send()
+})
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
