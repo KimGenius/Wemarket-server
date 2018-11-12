@@ -156,5 +156,15 @@ async function query(sql) {
     });
   });
 }
-
+// 소개 변경
+app.put('/user/:idx', async (req, res) => {
+  const {idx} = req.params
+  const {phone, storeDesc} = req.body
+  const {affectedRows} = await query(`UPDATE seller SET phone = '${phone}', storeDesc = '${storeDesc}' WHERE idx = ${idx}`)
+  if (affectedRows === 1) {
+    const result = await query(`SELECT * FROM seller WHERE idx = ${idx}`)
+    return res.status(200).send(result[0])
+  }
+  else if (affectedRows === 0) return res.status(404).send()
+})
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
