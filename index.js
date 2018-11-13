@@ -81,18 +81,19 @@ const multer = require('multer')
 var storage = multer.diskStorage(
   {
     destination: './uploads/',
-    filename: function ( req, file, cb ) {
+    filename: function (req, file, cb) {
       const fileName = file.originalname.split('.')
       const fileExt = fileName[fileName.length - 1]
-      cb( null, req.params.sdx + ':' + req.params.idx + '.' + fileExt);
+      cb(null, req.params.sdx + ':' + req.params.idx + '.' + fileExt);
     }
   }
 );
-var upload = multer( { storage: storage } )
+var upload = multer({storage: storage})
 // 메뉴 생성
 app.post('/menu/:sdx/image/:idx', upload.single('image'), async (req, res) => {
   const {idx} = req.params
-  await query(`UPDATE menu SET image = '${req.file.filename}' WHERE idx = ${idx}`)
+  const filename = req.file.filename ? req.file.filename : ''
+  await query(`UPDATE menu SET image = '${filename}' WHERE idx = ${idx}`)
   res.status(200).json(req.file)
 })
 app.post('/menu/:sdx', async (req, res) => {
@@ -156,6 +157,7 @@ async function query(sql) {
     });
   });
 }
+
 // 소개 변경
 app.put('/user/:idx', async (req, res) => {
   const {idx} = req.params
