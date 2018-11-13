@@ -149,6 +149,11 @@ async function query(sql) {
   const pool = await mysql.createPool(config)
   return new Promise(function (resolve, reject) {
     pool.query(sql, function (err, rows) {
+      pool.end(function(err) {
+        if(err) {
+          console.log(err.message);
+        }
+      })
       if (err) {
         reject(new Error(err));
       } else {
