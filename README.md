@@ -22,3 +22,4 @@
 - 유저 스키마 파트너스 추가 
 - 파트너스 상태 변경 API 추가
 - filename 오류 해결
+- connection end 추가
