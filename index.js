@@ -199,9 +199,13 @@ app.post('/partners', async (req, res) => {
   }
 })
 
+const moment = require('moment-timezone')
 // 파트너스 글 목록 가져오기
 app.get('/partners', async (req, res) => {
   const result = await query(`SELECT * FROM partners`)
+  result.map(item => {
+    item.endDate = moment.tz(item.endDate, 'Asia/Seoul').format('YYYY-MM-DD HH:mm:ss')
+  })
   return res.status(200).json(result)
 })
 
