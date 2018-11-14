@@ -30,4 +30,4 @@
 - 파트너스 판매자 참여
 - 파트너스 endDate 포맷 수정
 - 파트너스 endDate 타임존 수정
-
+- undefined 오류 해결
