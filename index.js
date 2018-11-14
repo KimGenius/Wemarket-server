@@ -66,6 +66,7 @@ app.post('/login', async (req, res) => {
     id,
     pw
   } = req.body
+  console.log(id, pw)
   const hexPw = crypto.createHash('sha512').update(pw).digest('hex')
   try {
     const result = await query(`SELECT t.* FROM wemarket.seller t WHERE t.id = '${id}' and t.pw = '${hexPw}';`)
@@ -149,8 +150,8 @@ async function query(sql) {
   const pool = await mysql.createPool(config)
   return new Promise(function (resolve, reject) {
     pool.query(sql, function (err, rows) {
-      pool.end(function(err) {
-        if(err) {
+      pool.end(function (err) {
+        if (err) {
           console.log(err.message);
         }
       })
@@ -186,4 +187,16 @@ app.put('/user/:idx/level', async (req, res) => {
   }
   else if (affectedRows === 0) return res.status(404).send()
 })
+
+// 파트너스 글 생성
+app.post('/partners', async (req, res) => {
+  const {title, content, endDate} = req.body
+  const {affectedRows} = await query(`INSERT INTO partners (title, endDate, content, udx) VALUES ('${title}', '${endDate}', '${content}', '')`)
+  try {
+    if (affectedRows === 1) return res.sendStatus(200)
+  } catch (e) {
+    res.status(500).json(e)
+  }
+})
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
