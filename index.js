@@ -199,4 +199,10 @@ app.post('/partners', async (req, res) => {
   }
 })
 
+// 파트너스 글 목록 가져오기
+app.get('/partners', async (req, res) => {
+  const result = await query(`SELECT * FROM partners`)
+  return res.status(200).json(result)
+})
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
