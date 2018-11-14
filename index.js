@@ -205,4 +205,25 @@ app.get('/partners', async (req, res) => {
   return res.status(200).json(result)
 })
 
+// 파트너스 판매자 참여
+app.put('/partners/:pdx', async (req, res) => {
+  const {sdx} = req.body // seller idx
+  const {pdx} = req.params // partners idx
+  const result = await query(`SELECT * FROM partners WHERE idx=${pdx}`)
+  const {udx} = result[0]
+  const udxList = udx.split(',')
+  let isAlready = false
+  udxList.map(u => {
+    if (u == sdx) isAlready = true
+  })
+  if (isAlready) res.status(409).json({'status': '이미 신청된 글입니다.'})
+  udxList.push(sdx)
+  const {affectedRows} = await query(`UPDATE partners SET udx='${udxList}' WHERE idx=${pdx}`)
+  if (affectedRows === 1) {
+    const result = await query(`SELECT * FROM partners WHERE idx = ${pdx}`)
+    return res.status(200).send(result[0])
+  }
+  else if (affectedRows === 0) return res.status(404).send()
+})
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
