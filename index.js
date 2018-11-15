@@ -146,6 +146,16 @@ app.delete('/menu/:idx', async (req, res) => {
   }
 })
 
+app.get('/seller/:sdx', async (req, res) => {
+  const {sdx} = req.params
+  try {
+    const result = await query(`SELECT storeName, storeDesc, phone FROM seller WHERE idx=${sdx}`)
+    res.json(result[0])
+  } catch (e) {
+    res.status(500).json(e)
+  }
+})
+
 async function query(sql) {
   const pool = await mysql.createPool(config)
   return new Promise(function (resolve, reject) {
