@@ -257,7 +257,7 @@ app.post('/order', async (req, res) => {
 })
 
 // 주문내역
-app.get('/order/:sdx', async (req, res) => {
+app.get('/orders/:sdx', async (req, res) => {
   const {sdx} = req.params
   try {
     const result = await query(`SELECT * FROM orders WHERE sdx=${sdx}`)
