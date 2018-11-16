@@ -256,4 +256,15 @@ app.post('/order', async (req, res) => {
   }
 })
 
+// 주문내역
+app.get('/order/:sdx', async (req, res) => {
+  const {sdx} = req.params
+  try {
+    const result = await query(`SELECT * FROM orders WHERE sdx=${sdx}`)
+    return res.json(result)
+  } catch (e) {
+    res.status(500).json(e)
+  }
+})
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
