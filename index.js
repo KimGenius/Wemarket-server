@@ -67,14 +67,15 @@ app.post('/login', async (req, res) => {
     pw
   } = req.body
   console.log(id, pw)
-  const hexPw = crypto.createHash('sha512').update(pw).digest('hex')
   try {
+    const hexPw = crypto.createHash('sha512').update(pw).digest('hex')
     const result = await query(`SELECT t.* FROM wemarket.seller t WHERE t.id = '${id}' and t.pw = '${hexPw}';`)
     if (!result[0]) {
       return res.status(404).send()
     }
     return res.json(result[0])
   } catch (e) {
+    console.log(e)
     res.status(500).json(e)
   }
 })
@@ -166,6 +167,7 @@ async function query(sql) {
         }
       })
       if (err) {
+        console.log(err)
         reject(new Error(err));
       } else {
         resolve(rows);
@@ -241,6 +243,17 @@ app.put('/partners/:pdx', async (req, res) => {
     return res.status(200).json(result[0])
   }
   else if (affectedRows === 0) return res.status(404).send()
+})
+
+// 주문
+app.post('/order', async (req, res) => {
+  const {phone, sdx, menuText, price, type, dateCreated} = req.body
+  try {
+    const {affectedRows} = await query(`INSERT INTO orders (cphone, sdx, menuText, price, type, dateCreated) VALUES ('${phone}', ${sdx}, '${menuText}', ${price}, '${type}', '${dateCreated}')`)
+    if (affectedRows === 1) return res.sendStatus(200)
+  } catch (e) {
+    res.status(500).json(e)
+  }
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
