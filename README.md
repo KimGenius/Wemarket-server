@@ -42,3 +42,4 @@
 - 주문내역 API Route 수정
 - send -> sendStatus, json으로 수정
 - 주문 상태 변경 API 작업
+- 주문내역 최신순으로 수정
