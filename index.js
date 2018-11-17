@@ -260,7 +260,7 @@ app.post('/order', async (req, res) => {
 app.get('/orders/:sdx', async (req, res) => {
   const {sdx} = req.params
   try {
-    const result = await query(`SELECT * FROM orders WHERE sdx=${sdx}`)
+    const result = await query(`SELECT * FROM orders WHERE sdx=${sdx} ORDER BY dateCreated DESC`)
     return res.json(result)
   } catch (e) {
     res.status(500).json(e)
