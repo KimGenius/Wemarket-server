@@ -30,7 +30,7 @@ app.use(function (req, res, next) {
     res.header('Access-Control-Max-Age', 60 * 60 * 24 * 365)
   }
   if (oneof && req.method === 'OPTIONS') {
-    res.send(200)
+    res.sendStatus(200)
   } else {
     next()
   }
@@ -71,7 +71,7 @@ app.post('/login', async (req, res) => {
     const hexPw = crypto.createHash('sha512').update(pw).digest('hex')
     const result = await query(`SELECT t.* FROM wemarket.seller t WHERE t.id = '${id}' and t.pw = '${hexPw}';`)
     if (!result[0]) {
-      return res.status(404).send()
+      return res.sendStatus(404)
     }
     return res.json(result[0])
   } catch (e) {
@@ -125,7 +125,7 @@ app.get('/menu/:sdx', async (req, res) => {
   try {
     const result = await query(`SELECT * FROM menu WHERE sdx = ${sdx}`)
     if (!result[0]) {
-      return res.status(404).send()
+      return res.sendStatus(404)
     }
     return res.json(result)
   } catch (e) {
@@ -140,8 +140,8 @@ app.delete('/menu/:idx', async (req, res) => {
   } = req.params
   try {
     const {affectedRows} = await query(`DELETE FROM menu WHERE idx = ${idx}`)
-    if (affectedRows === 1) return res.status(200).send()
-    else if (affectedRows === 0) return res.status(404).send()
+    if (affectedRows === 1) return res.sendStatus(200)
+    else if (affectedRows === 0) return res.sendStatus(404)
   } catch (e) {
     res.status(500).json(e)
   }
@@ -183,9 +183,9 @@ app.put('/user/:idx', async (req, res) => {
   const {affectedRows} = await query(`UPDATE seller SET phone = '${phone}', storeDesc = '${storeDesc}' WHERE idx = ${idx}`)
   if (affectedRows === 1) {
     const result = await query(`SELECT * FROM seller WHERE idx = ${idx}`)
-    return res.status(200).send(result[0])
+    return res.status(200).json(result[0])
   }
-  else if (affectedRows === 0) return res.status(404).send()
+  else if (affectedRows === 0) return res.sendStatus(404)
 })
 
 // 파트너스(level) 상태 변경
@@ -195,9 +195,9 @@ app.put('/user/:idx/level', async (req, res) => {
   const {affectedRows} = await query(`UPDATE seller SET level = '${level}' WHERE idx = ${idx}`)
   if (affectedRows === 1) {
     const result = await query(`SELECT * FROM seller WHERE idx = ${idx}`)
-    return res.status(200).send(result[0])
+    return res.status(200).json(result[0])
   }
-  else if (affectedRows === 0) return res.status(404).send()
+  else if (affectedRows === 0) return res.sendStatus(404)
 })
 
 // 파트너스 글 생성
@@ -242,7 +242,7 @@ app.put('/partners/:pdx', async (req, res) => {
     const result = await query(`SELECT * FROM partners WHERE idx = ${pdx}`)
     return res.status(200).json(result[0])
   }
-  else if (affectedRows === 0) return res.status(404).send()
+  else if (affectedRows === 0) return res.sendStatus(404)
 })
 
 // 주문
