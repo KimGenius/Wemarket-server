@@ -267,4 +267,16 @@ app.get('/orders/:sdx', async (req, res) => {
   }
 })
 
+// 주문상태변경
+app.put('/orders/:idx', async (req, res) => {
+  const {idx} = req.params
+  const {status} = req.body
+  try {
+    const {affectedRows} = await query(`UPDATE orders SET status = '${status}' WHERE idx = ${idx}`)
+    if (affectedRows === 1) return res.sendStatus(200)
+  } catch (e) {
+    res.status(500).json(e)
+  }
+})
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
