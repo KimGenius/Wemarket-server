@@ -147,10 +147,11 @@ app.delete('/menu/:idx', async (req, res) => {
   }
 })
 
+// 판매자 정보 가져오기
 app.get('/seller/:sdx', async (req, res) => {
   const {sdx} = req.params
   try {
-    const result = await query(`SELECT storeName, storeDesc, phone FROM seller WHERE idx=${sdx}`)
+    const result = await query(`SELECT status, storeName, storeDesc, phone FROM seller WHERE idx=${sdx}`)
     res.json(result[0])
   } catch (e) {
     res.status(500).json(e)
