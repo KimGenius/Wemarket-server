@@ -159,22 +159,26 @@ app.get('/seller/:sdx', async (req, res) => {
 })
 
 async function query(sql) {
-  const pool = await mysql.createPool(config)
-  return new Promise(function (resolve, reject) {
-    pool.query(sql, function (err, rows) {
-      pool.end(function (err) {
+  try {
+    const pool = await mysql.createPool(config)
+    return new Promise(function (resolve, reject) {
+      pool.query(sql, function (err, rows) {
+        pool.end(function (err) {
+          if (err) {
+            console.log(err.message);
+          }
+        })
         if (err) {
-          console.log(err.message);
+          console.log(err)
+          reject(new Error(err));
+        } else {
+          resolve(rows);
         }
-      })
-      if (err) {
-        console.log(err)
-        reject(new Error(err));
-      } else {
-        resolve(rows);
-      }
+      });
     });
-  });
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 // 소개 변경
