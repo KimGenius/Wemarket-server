@@ -50,8 +50,8 @@ app.post('/join', async (req, res) => {
   } = req.body
   const hexPw = crypto.createHash('sha512').update(pw).digest('hex')
   try {
-    const {affectedRows} = query('INSERT INTO `wemarket`.`seller` (`id`, `pw`, `storeName`, `storeDesc`, `storeType`, `sellerName`, `sellerCode`, `phone`, `bank`, `accountNumber`) VALUES ' +
-      '("' + id + '", "' + hexPw + '", "' + storeName + '", "' + storeDesc + '", "' + storeType + '", "' + sellerName + '", "' + sellerCode + '", "' + phone + '", "' + bank + '", "' + accountNumber + '")')
+    const {affectedRows} = query('INSERT INTO `wemarket`.`seller` (`id`, `pw`, `storeName`, `storeDesc`, `storeType`, `sellerName`, `sellerCode`, `phone`, `bank`, `accountNumber`, `status`) VALUES ' +
+      '("' + id + '", "' + hexPw + '", "' + storeName + '", "' + storeDesc + '", "' + storeType + '", "' + sellerName + '", "' + sellerCode + '", "' + phone + '", "' + bank + '", "' + accountNumber + '","JOIN")')
     res.json({affectedRows})
   } catch (e) {
     if (e.message.split(':')[1].trim() === 'ER_DUP_ENTRY') {
