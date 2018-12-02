@@ -8,6 +8,7 @@ const bodyParser = require('body-parser')
 const crypto = require('crypto')
 // parse application/x-www-form-urlencoded
 app.use('/uploads', express.static('uploads'))
+app.use('/image', express.static('image'))
 app.use(bodyParser.urlencoded({limit: '100mb', extended: true}))
 
 // parse application/json
